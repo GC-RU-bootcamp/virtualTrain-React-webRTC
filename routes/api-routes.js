@@ -31,10 +31,20 @@ module.exports = function (app) {
     // Since we're doing a POST with javascript, we can't actually redirect that post into a GET request
     // So we're sending the user back the route to the members page because the redirect will happen on the front end
     // They won't get this or even be able to access this page if they aren't authed
-    
-    // console.log(req.user);
-    // console.log(req.body);
-    res.json("/all-sessions");
+
+    console.log("/api/login req.user:", req.user);
+    console.log("/api/login req.body:", req.body);
+    const retval = {
+      logon_id: req.user.logon_id,
+      firstName: req.user.fst_nam,
+      lastName: req.user.lst_nam,
+      role: req.user.role,
+      photo: req.user.photo
+    }
+    //res.json("/all-sessions");
+    console.log("/api/login retval:", retval);
+
+    res.json(retval);
   });
 
 
@@ -76,14 +86,26 @@ module.exports = function (app) {
             photo: result.secure_url
           }).then(function (userInfo) {
             // Upon successful signup, log user in
-            req.login({username: userInfo.logon_id, 
-                       password: userInfo.logon_pwd}, function (err) {
+            req.login({
+              username: userInfo.logon_id,
+              password: userInfo.logon_pwd
+            }, function (err) {
               if (err) {
-                console.log(err)
+                console.log("/api/signup login:", err)
                 return res.status(422).json(err);
               }
-              console.log(req.user);
-              res.json("/all-sessions");
+              console.log("/api/signup login:",req.user);
+              // res.json("/all-sessions"); // old project 2
+              const retval = {
+                logon_id: req.user.logon_id,
+                firstName: req.user.fst_nam,
+                lastName: req.user.lst_nam,
+                role: req.user.role,
+                photo: req.user.photo
+              }
+              console.log("/api/signup retval:", retval);
+          
+              res.json(retval);
             });
           }).catch(function (err) {
             console.log(err)
@@ -101,16 +123,26 @@ module.exports = function (app) {
           cell_phone: fields.cell,
           role: fields.role,
           created_by: fields.createdBy
-      }).then(function (userInfo) {
-         // Upon successful signup, log user in
-         req.login(userInfo, function (err) {
-           if (err) {
-             console.log(err)
-             return res.status(422).json(err);
-           }
-           console.log(req.user);
-           return res.json("/all-sessions");
-         });
+        }).then(function (userInfo) {
+          // Upon successful signup, log user in
+          req.login(userInfo, function (err) {
+            if (err) {
+              console.log(err)
+              return res.status(422).json(err);
+            }
+            console.log("/api/signup login:", req.user);
+            const retval = {
+              logon_id: req.user.logon_id,
+              firstName: req.user.fst_nam,
+              lastName: req.user.lst_nam,
+              role: req.user.role,
+              photo: req.user.photo
+            }
+            console.log("/api/signup retval:", retval);
+        
+             res.json(retval);
+             // res.json("/all-sessions"); //old project 2
+          });
         }).catch(function (err) {
           console.log(err);
           res.status(422).json(err);
@@ -121,33 +153,66 @@ module.exports = function (app) {
   });
 
   // Route for logging user out
-  app.get("/logout", function (req, res) {
+  app.get("api/logout", function (req, res) {
+    console.log("/logout req.user:", req.user);
+    console.log("/logout req.body:", req.body);
+
     req.logout();
-    res.redirect("/");
+    // res.redirect("/"); //old  project2 
+    var retval = {
+      logon_id: "",
+      firstName: "",
+      lastName: "",
+      role: "",
+      photo: ""
+    }
+    console.log("/logout retval:", retval);
+    res.json(retval);
   });
 
   // Route for getting some data about our user to be used client side
   app.get("/api/user_data", function (req, res) {
+    console.log("/api/user_data req.user:", req.user);
+    console.log("/api/user_data req.body:", req.body);
     if (!req.user) {
       // The user is not logged in, send back an empty object
-      res.json({});
+      /// res.json({}); // old project 2
+      var retval = {
+        logon_id: "",
+        firstName: "",
+        lastName: "",
+        role: "",
+        photo: ""
+      }
+      console.log("/api/user_data retval:", retval);
+      res.json(retval);
     } else {
       // Otherwise send back the user's email and id
       // Sending back a password, even a hashed password, isn't a good idea
-      res.json({
-        email: req.user.email,
-        id: req.user.id,
+      // res.json({
+      //   email: req.user.email,
+      //   id: req.user.id,
+      //   photo: req.user.photo
+      // });
+      const retval = {
+        logon_id: req.user.logon_id,
+        firstName: req.user.fst_nam,
+        lastName: req.user.lst_nam,
+        role: req.user.role,
         photo: req.user.photo
-      });
+      }
+      //res.json("/all-sessions");
+      console.log("/api/user_data retval:", retval);
+  
+      res.json(retval);
     }
   });
 
   // Route for posting a new session to the database
-  app.post("/api/host/create-session", function (req, res){
-    if(!req.user){
+  app.post("/api/host/create-session", function (req, res) {
+    if (!req.user) {
       res.status(403).end();
-    }
-    else{
+    } else {
       var newSession = req.body;
       var builtSession = {
         people_id: req.user.id,
@@ -161,69 +226,68 @@ module.exports = function (app) {
         conn_info: uuidv4(),
         created_by: req.user.created_by
       };
-  
+
       //On post create a uuid for the session
-      db.sessions.create(builtSession).then(function(){
+      db.sessions.create(builtSession).then(function () {
         res.status(201).end();
-      }).catch(function(){
+      }).catch(function () {
         res.status(500).end();
       });
     }
   });
 
   //Route fpr getting back all the host's available sessions
-  app.get("/api/host/my-sessions", function(req, res){
+  app.get("/api/host/my-sessions", function (req, res) {
     db.sessions.findAll({
-      where:{
+      where: {
         people_id: req.user.id,
         item_date: {
           [Op.gte]: moment()
         }
       }
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
 
   //Route for getting back all the sessions in the db
-  app.get("/api/host/show-sessions", function(req, res){
-    if(!req.user){
+  app.get("/api/host/show-sessions", function (req, res) {
+    if (!req.user) {
       res.status(403).end();
-    }
-    else{
-      db.sessions.findAll().then(function(result){
+    } else {
+      db.sessions.findAll().then(function (result) {
         res.json(result);
       });
     }
   });
 
   //Route fpr getting back all the host's past sessions
-  app.get("/api/host/session-history", function(req, res){
+  app.get("/api/host/session-history", function (req, res) {
     db.sessions.findAll({
-      where:{
+      where: {
         people_id: req.user.id,
         item_date: {
           [Op.lt]: moment()
         }
       }
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
 
   //Route for getting back one session by it's ID
-  app.get("/api/host/:sessionID", function(req, res){
+  app.get("/api/host/:sessionID", function (req, res) {
     db.sessions.findOne({
-      where:{
+      where: {
         id: req.params.sessionID
       }
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
@@ -231,58 +295,58 @@ module.exports = function (app) {
   // TO-DO || Add functionality to cancel a session that a person is attending 
   //       || You cannot currently delete a session that someon is attending
   //Route for deleting a specific session
-  app.delete("/api/host/my-sessions/:sessionID", function(req, res){
+  app.delete("/api/host/my-sessions/:sessionID", function (req, res) {
     db.sessions.destroy({
-      where:{
+      where: {
         id: parseInt(req.params.sessionID)
       }
-    }).then(function(){
+    }).then(function () {
       res.status(204).end();
-    }).catch(function(err){
+    }).catch(function (err) {
       console.log(err);
       res.status(500).end();
     })
   });
-  
+
   //Route for attending a pre-made session
- // app.post("/api/client/attend", function(req, res){
-  app.post("/api/client/register", function(req, res){
+  // app.post("/api/client/attend", function(req, res){
+  app.post("/api/client/register", function (req, res) {
     db.people_session.create({
       people_id: req.body.user_id,
       session_id: req.body.session_id,
       created_by: req.body.logon_id
-    }).then(function(){
+    }).then(function () {
       // return res.redirect("/all-sessions");
       res.json("/all-sessions");
       // res.status(201).end();
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end();
     })
   });
 
-    //Route for attending a pre-made session
-    app.post("/api/client/cancel", function(req, res){
-      db.people_session.destroy({
-        where: {
-          people_id: req.body.user_id,
-          session_id: req.body.session_id
-          // session_id: req.body.session_id,
+  //Route for attending a pre-made session
+  app.post("/api/client/cancel", function (req, res) {
+    db.people_session.destroy({
+      where: {
+        people_id: req.body.user_id,
+        session_id: req.body.session_id
+        // session_id: req.body.session_id,
         // created_by: req.body.logon_id
       }
-    }).then(function(){
+    }).then(function () {
       // return res.redirect("/all-sessions");
       res.json("/all-sessions");
       // res.status(204).end();
-        // res.status(201).end();
-      }).catch(function(){
-        res.status(500).end();
-      })
-    });
+      // res.status(201).end();
+    }).catch(function () {
+      res.status(500).end();
+    })
+  });
 
   //Route for getting all the session a person is going to attend
-  app.get("/api/client/my-sessions", function(req, res){
+  app.get("/api/client/my-sessions", function (req, res) {
     db.people_session.findAll({
-      where:{
+      where: {
         people_id: req.user.id
       },
       // this was only returning the host's sessions
@@ -295,29 +359,28 @@ module.exports = function (app) {
       //     }
       //   }
       // }]
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
 
   //Route for getting all the sessions back in the db
-  app.get("/api/client/show-sessions", function(req, res){
-    if(!req.user){
+  app.get("/api/client/show-sessions", function (req, res) {
+    if (!req.user) {
       res.status(403).end();
-    }
-    else{
-      db.sessions.findAll().then(function(result){
+    } else {
+      db.sessions.findAll().then(function (result) {
         res.json(result);
       });
     }
   });
 
   //Route for getting back all the sessions a client has attended
-  app.get("/api/client/session-history", function(req,res){
+  app.get("/api/client/session-history", function (req, res) {
     db.people_session.findAll({
-      where:{
+      where: {
         people_id: req.user.id
       },
       include: [{
@@ -329,45 +392,45 @@ module.exports = function (app) {
           }
         }
       }]
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
 
   //Route for getting a specific session back
-  app.get("/api/client/session/:sessionID", function(req,res){
+  app.get("/api/client/session/:sessionID", function (req, res) {
     db.sessions.findOne({
-      where:{
+      where: {
         id: req.params.sessionID
       }
-    }).then(function(result){
+    }).then(function (result) {
       res.json(result);
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
 
   //Route for checking whether req.user is the host
-  app.get("/api/session/:uuid", function(req,res){
+  app.get("/api/session/:uuid", function (req, res) {
     db.sessions.findOne({
-      where:{
+      where: {
         conn_info: req.params.uuid
       }
-    }).then(function(result){
-      if(req.user.id === result.people_id){
+    }).then(function (result) {
+      if (req.user.id === result.people_id) {
         res.json({
           isHost: 1,
           name: result.name
         })
-      } else{
+      } else {
         res.json({
           isHost: 0,
-          name:result.name
+          name: result.name
         });
       }
-    }).catch(function(){
+    }).catch(function () {
       res.status(500).end()
     })
   });
