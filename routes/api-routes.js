@@ -153,7 +153,7 @@ module.exports = function (app) {
   });
 
   // Route for logging user out
-  app.get("api/logout", function (req, res) {
+  app.get("/api/logout", function (req, res) {
     console.log("/logout req.user:", req.user);
     console.log("/logout req.body:", req.body);
 
