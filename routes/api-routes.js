@@ -86,15 +86,17 @@ module.exports = function (app) {
             photo: result.secure_url
           }).then(function (userInfo) {
             // Upon successful signup, log user in
-            req.login({
-              username: userInfo.logon_id,
-              password: userInfo.logon_pwd
-            }, function (err) {
+            req.login( userInfo
+            //   { 
+            //    username: userInfo.logon_id,
+            //    password: userInfo.logon_pwd
+            // }
+            , function (err) {
               if (err) {
-                console.log("/api/signup login:", err)
+                console.log("/api/signup w/photo login:", err)
                 return res.status(422).json(err);
               }
-              console.log("/api/signup login:",req.user);
+              console.log("/api/signup w/photo login:",req.user);
               // res.json("/all-sessions"); // old project 2
               const retval = {
                 logon_id: req.user.logon_id,
@@ -127,10 +129,10 @@ module.exports = function (app) {
           // Upon successful signup, log user in
           req.login(userInfo, function (err) {
             if (err) {
-              console.log(err)
+              console.log("/api/signup no photo login:", err)
               return res.status(422).json(err);
             }
-            console.log("/api/signup login:", req.user);
+            console.log("/api/signup no photo login:", req.user);
             const retval = {
               logon_id: req.user.logon_id,
               firstName: req.user.fst_nam,
