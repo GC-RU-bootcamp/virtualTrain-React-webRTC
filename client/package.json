@@ -5,7 +5,7 @@
   "proxy-local": "http://localhost:8080/",
   "proxy-project2": "https://dry-woodland-49935.herokuapp.com/",
   "proxy-project3": "https://fathomless-wildwood-74450.herokuapp.com/",
-  "proxy": "https://fathomless-wildwood-74450.herokuapp.com/",
+  "proxy": "http://localhost:8080/",
   "dependencies": {
     "axios": "^0.18.0",
     "react": "^16.4.1",

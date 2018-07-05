@@ -8,8 +8,8 @@ var env       = process.env.NODE_ENV || 'development';
 var config    = require(__dirname + '/../config/config.json')[env];
 var db        = {};
 
-console.log("env="+ env);
-console.log("config=" + config);
+console.log("models/index.js env="+ env);
+console.log("models/index.js config=" + config);
 
 
 if (config.use_env_variable) {

@@ -10,7 +10,6 @@ import { render } from "react-dom";
 //   Responsive
 // } from "semantic-ui-react";
 
-
 import {BrowserRouter as Router, Route, Switch, 
 //  NavLink, 
   Link} from "react-router-dom";
@@ -19,139 +18,26 @@ import CreateSessionForm from "./components/CreateSessionForm";
 import SessionHistoryForm from "./components/SessionHistoryForm";
 import HomeForm from "./components/HomeForm";
 import NavBar from "./components/NavBar";
-//import {NavLink} from 'react-router-dom'
-
-
-// const NavBarMobile = ({
-//   children,
-//   leftItems,
-//   onPusherClick,
-//   onToggle,
-//   rightItems,
-//   visible
-// }) => (
-//   <Sidebar.Pushable>
-//     <Sidebar
-//       as={Menu}
-//       animation="overlay"
-//       icon="labeled"
-//       inverted
-//       items={leftItems}
-//       vertical
-//       visible={visible}
-//     />
-//     <Sidebar.Pusher
-//       dimmed={visible}
-//       onClick={onPusherClick}
-//       style={{ minHeight: "100vh" }}
-//     >
-//       <Menu fixed="top" inverted>
-//         <Menu.Item>
-//           <Link as="Link" to="/" >
-//             <Image size="mini" src="https://res.cloudinary.com/dujdeh5dl/image/upload/v1530628176/ICEPeers.png" as="Link" to="/"/>
-//           </Link>
-//         </Menu.Item>
-//         <Menu.Item onClick={onToggle}>
-//           <Icon name="sidebar" />
-//         </Menu.Item>
-//         <Menu.Menu position="right">
-//           {/* {_.map(rightItems, item => <Menu.Item {...item} />)} */}
-//           {_.map(rightItems, item => <NavLink {...item} />)}
-//         </Menu.Menu>
-//       </Menu>
-//       {children}
-//     </Sidebar.Pusher>
-//   </Sidebar.Pushable>
-// );
-
-// const NavBarDesktop = ({ leftItems, rightItems }) => (
-  
-//   //console.log(_.map(leftItems, item => "<Menu.Item" + {...item} + "/>"));
-//    <Menu fixed="top" inverted>
-//     <Menu.Item>
-//       <Link as="Link" to="/" >
-//           <Image size="mini" src="https://res.cloudinary.com/dujdeh5dl/image/upload/v1530628176/ICEPeers.png"  />
-//       </Link>
-//     </Menu.Item>
-//       {_.map(leftItems, item => <Menu.Item {...item} />)}
-//     <Menu.Menu position="right">
-//       {_.map(rightItems, item => <Menu.Item {...item} />)}
-//     </Menu.Menu>
-//   </Menu>
-
-// );
-
-// const NavBarChildren = ({ children }) => (
-//   <Container style={{ marginTop: "5em" }}>{children}</Container>
-// );
-
-// ///////
-// class NavBar extends Component {
-//   state = {
-//     visible: false
-//   };
-
-//   handlePusher = () => {
-//     const { visible } = this.state;
-
-//     if (visible) this.setState({ visible: false });
-//   };
-
-//   handleToggle = () => this.setState({ visible: !this.state.visible });
-
-//   render() {
-//     const { children, leftItems, rightItems } = this.props;
-//     const { visible } = this.state;
-
-//     return (
-//       <div>
-//         <Responsive {...Responsive.onlyMobile}>
-//           <NavBarMobile
-//             leftItems={leftItems}
-//             onPusherClick={this.handlePusher}
-//             onToggle={this.handleToggle}
-//             rightItems={rightItems}
-//             visible={visible}
-//           >
-//             <NavBarChildren>{children}</NavBarChildren>
-//           </NavBarMobile>
-//         </Responsive>
-//         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-//           <NavBarDesktop leftItems={leftItems} rightItems={rightItems} />
-//           <NavBarChildren>{children}</NavBarChildren>
-//         </Responsive>
-//       </div>
-//     );
-//   }
-// }
-
-// const leftItems = [
-//   { as: Link, content: "Überlift", key: "home", to:"/"},
-//   { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
-//   { as: Link, content: "Past Sessions", key: "session_history", to:"/session_history" },
-//   { as: Link, content: "Create Session", key: "create_session", to:"/create_session" }
-// ];
-// /*Find Sessions
-//   My Sessions
-//   Past Sessions
-//   Create Session*/
-// const rightItems = [
-//   { as: "a", content: "Login", key: "login" },
-//   { as: "a", content: "Register", key: "register" }
-// ];
-// const leftItems = [
-//   { as: Link, content: "Überlift", key: "home", to:"/"},
-//   { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
-//   { as: Link, content: "Past Sessions", key: "session_history", to:"/session_history" },
-//   { as: Link, content: "Create Session", key: "create_session", to:"/create_session" }
-// ];
-
-// const rightItems = [
-//   { as: "a", content: "Login", key: "login" },
-//   { as: "a", content: "Register", key: "register" }
-// ];
 
 //const App = () => (
+
+ const loggedOut =  [
+    { as: Link, content: "Überlift", key: "home", to:"/"},
+    { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
+  ];
+
+const loggedInHost =  [
+  { as: Link, content: "Überlift", key: "home", to:"/"},
+  { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
+  { as: Link, content: "Past Sessions", key: "session_history", to:"/session_history" },
+  { as: Link, content: "Create Session", key: "create_session", to:"/create_session" }
+];
+
+const loggedInClient =  [
+  { as: Link, content: "Überlift", key: "home", to:"/"},
+  { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
+  { as: Link, content: "Past Sessions", key: "session_history", to:"/session_history" },
+];
 
 class App extends Component {
   constructor(props, context) {
@@ -165,12 +51,7 @@ class App extends Component {
         firstName: "",
         lastName: ""
       },
-      leftItems:  [
-        { as: Link, content: "Überlift", key: "home", to:"/"},
-        { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
-        { as: Link, content: "Past Sessions", key: "session_history", to:"/session_history" },
-        { as: Link, content: "Create Session", key: "create_session", to:"/create_session" }
-      ]
+      leftItems:  loggedOut
       ,
       rightItems:  [
         // { as: "a", content: "Login", key: "login" },
@@ -184,20 +65,18 @@ class App extends Component {
   modalSubmit(param) {
     console.log("DesktopContainer param:", param);
 
-    this.setState(prevState => ({
-      in: !prevState.in,
-      loginInfo:{role: param.role,
-      username: param.logon_id,
-      firstName: param.firstName,
-      lastName: param.lastName
-    }
-
+    this.setState(prevState => ({ in: !prevState.in,
+      loginInfo: {
+        role: param.role,
+        username: param.logon_id,
+        firstName: param.firstName,
+        lastName: param.lastName
+      },
+      leftItems: !param.role?loggedOut:param.role==='host'?loggedInHost:loggedInClient
     }));
-    console.log("App state:", this.state);
-  }
-    // console.log("App props", props);
-    // console.log("App context",context);
- // }
+    console.log("<App> modalSubmit() state:", this.state);
+  }; // end modalSubmit
+
   render(props){
     return ( 
        <Router>

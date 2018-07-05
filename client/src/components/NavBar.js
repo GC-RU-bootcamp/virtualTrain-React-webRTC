@@ -61,7 +61,7 @@ const NavBarMobile = ({
           <LoginModal passHandler={modalSubmit} />
         </Menu.Menu>
       </Menu>
-      {children}
+      {/* {children} */}
     </Sidebar.Pusher>
   </Sidebar.Pushable>
 );
