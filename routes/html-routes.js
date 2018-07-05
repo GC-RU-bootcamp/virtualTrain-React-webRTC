@@ -17,10 +17,20 @@ module.exports = function (app) {
   app.get("/", function (req, res) {
     // If the user already has an account send them to the members page
     if (req.user) {
-      return res.redirect("/all-sessions");
+      return res.redirect("/sessions");
     }
-    res.sendFile(path.join(__dirname, "../public/html/index.html"));
+    res.sendFile(path.join(__dirname, ".client/build/index.html"));
+  
   });
+
+  // project 2 code
+  // app.get("/", function (req, res) {
+  //   // If the user already has an account send them to the members page
+  //   if (req.user) {
+  //     return res.redirect("/all-sessions");
+  //   }
+  //   res.sendFile(path.join(__dirname, "../public/html/index.html"));
+  // });
 
   app.get("/login", function (req, res) {
     // If the user already has an account send them to the members page

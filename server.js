@@ -30,6 +30,9 @@ require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
 require("./routes/host-routes.js")(app);
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, ".client/build/index.html"));
+});
 
 // Syncing our database and logging a message to the user upon success
 db.sequelize.sync({force: false}).then(function() {
