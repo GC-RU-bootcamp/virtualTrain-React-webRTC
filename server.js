@@ -30,8 +30,13 @@ require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
 require("./routes/host-routes.js")(app);
 
+// if(process.env.NODE_ENV === "production"){
+  app.use(express.static("client/build"));
+// }
+
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, ".client/build/index.html"));
+  console.log("server.js app.get(*): ", __dirname + "\\client\\build\\index.html");
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
 // Syncing our database and logging a message to the user upon success
