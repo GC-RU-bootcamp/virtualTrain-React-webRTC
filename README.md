@@ -5,10 +5,8 @@
 
 ### Created by:
 __Gary Cender__, __Dave Fischer__ , __Derrick Gill__ 
-### ORGINAL (project 2) Site URL: 
- https://dry-woodland-49935.herokuapp.com
-### NEW (project 3) Site URL: 
- https://-----------TBD-------.herokuapp.com
+###  Site URL: 
+ https://fathomless-wildwood-74450.herokuapp.com/
 
 
 ### GitHub Repository: 
@@ -39,7 +37,7 @@ https://github.com/GC-RU-bootcamp/virtualTrain-React-webRTC
 *   npm 
 
 #### Coding 
-* JavaScript. JQuery, HTML, CSS, Bootstrap 4,  Handlebars
+* JavaScript.  HTML, CSS, React React, React Semantic-UI 
 
 #### New user creation and management 
 *   Formidable
@@ -51,8 +49,9 @@ https://github.com/GC-RU-bootcamp/virtualTrain-React-webRTC
 *   body-parser
 
 #### Presentation
-*  express-handlebars
-*  momentjs
+*   React
+*   React Semantic-UI
+*   momentjs
 
 #### Data Storage
 *   mysql2

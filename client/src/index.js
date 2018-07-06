@@ -10,7 +10,8 @@ import { render } from "react-dom";
 //   Responsive
 // } from "semantic-ui-react";
 
-import {BrowserRouter as Router, Route, Switch, 
+import {BrowserRouter as Router, Route, Switch,  Redirect,
+
 //  NavLink, 
   Link} from "react-router-dom";
 import SessionForm from "./components/SessionsForm";
@@ -23,7 +24,7 @@ import NavBar from "./components/NavBar";
 
  const loggedOut =  [
     { as: Link, content: "Überlift", key: "home", to:"/"},
-    { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
+    // { as: Link, content: "Find Sessions", key: "find-sessions" , to: "/sessions" },
   ];
 
 const loggedInHost =  [
@@ -75,6 +76,7 @@ class App extends Component {
       leftItems: !param.role?loggedOut:param.role==='host'?loggedInHost:loggedInClient
     }));
     console.log("<App> modalSubmit() state:", this.state);
+    < Redirect to="/"  />
   }; // end modalSubmit
 
   render(props){

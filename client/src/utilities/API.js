@@ -35,6 +35,8 @@ export default {
     //   }
     // })
   },
-
+  getSessons: function() {
+    return axios.get('/all-sessions')
+  },
  
 }

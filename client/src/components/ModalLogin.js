@@ -5,6 +5,7 @@ import { Button, Modal, Label } from 'semantic-ui-react'
 import  LoginForm  from './LoginForm'
 import  SignUpForm  from './SignUpForm'
 import  API  from '../utilities/API'
+import { Route, Redirect,  withRouter } from 'react-router'
 
 class ModalLogin extends Component {
   constructor(props, context) {
@@ -87,6 +88,12 @@ class ModalLogin extends Component {
     };
 
     logout = ( ) => {
+      
+      console.log("<ModalLogin> logout() 'redirect' state=>", this.state," props=>", this.props, " context=>", this.context);
+          < Redirect push to="/"  />
+          // this.props.history.push("/");
+          // props.history.push("/");
+          
           API.userLogout()
           .then((result) => {
             console.log("logout API results:", result.data);

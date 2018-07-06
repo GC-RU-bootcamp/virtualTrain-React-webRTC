@@ -62,10 +62,10 @@ module.exports = function (app) {
   // If a user who is not logged in tries to access this route they will be redirected to the signup page
   app.get("/all-sessions", isAuthenticated, function (req, res) {
     console.log("req======================");
-    console.log(req.body);
-    console.log(req.user);
+    console.log('app.get("/all-sessions" req.body:', req.body);
+    console.log('app.get("/all-sessions" req.user:', req.user);
     console.log("res======================");
-    console.log(res);
+    console.log('app.get("/all-sessions" res:', res);
     console.log("end res======================");
 
     db.sessions.findAll({
@@ -110,21 +110,28 @@ module.exports = function (app) {
 
     //  console.log("END result ======================");
       var sessions = {
-        title: "All Sessions",
-        role: req.user.role,
-        username: req.user.fst_nam + " " + req.user.lst_nam,
-        logon_id2: String(req.user.logon_id),
-        user_id: req.user.id,
+        title: "all-sessions",
+        fullname: req.user.fst_nam + " " + req.user.lst_nam,
         isHost: req.user.role === 'host' ? true : false,
+        loginInfo: {
+          logon_id: req.user.logon_id,
+          firstName: req.user.fst_nam,
+          lastName: req.user.lst_nam,
+          role: req.user.role,
+          photo: req.user.photo,
+          user_id: req.user.id,
+        },
         sessions: result,
       };
       console.log("sessions ======================");
      // console.log(sessions);
      // console.log("END result ======================");
 
-      res.render('all-sessions', sessions);
+      //res.render('all-sessions', sessions); // project 2
+      res.json(sessions);
     });
   });
+
   app.get("/create-session", function(req,res){
     res.sendFile(path.join(__dirname, "../public/html/createSession.html"));
   });
