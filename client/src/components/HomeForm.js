@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 //import { Button, Modal } from 'semantic-ui-react'
 //import { Input } from 'semantic-ui-react'
 //import { Form } from 'semantic-ui-react'
-import { Container, Item, Image, Divider, Grid, Header, List } from 'semantic-ui-react'
+import { Container, 
+ // Item, 
+  Image, 
+ // Divider, 
+  Grid, Header, List } from 'semantic-ui-react'
 
 class HomeForm extends Component {
   constructor(props, context) {

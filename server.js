@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var session = require("express-session");
 var handlebars = require('express-handlebars');
 var socket = require('socket.io');
+var path = require("path");
 // Requiring passport as we've configured it
 var passport = require("./config/passport");
 
@@ -54,46 +55,59 @@ db.sequelize.sync({force: false}).then(function() {
   // If a connection is formed push the connection to the connections array
   // Listen for a disconnect for said connection
   io.on('connection',function(socket){
-    console.log('\t:: Socket :: has made a connection.');
+    console.log("------------",'\t:: Socket :: has made a connection.');
     Connections.push(socket.id);
-    console.log('\t:: Socket :: has ' + Connections.length + ' connections.');
+    console.log("------------",'\t:: Socket :: has ' + Connections.length + ' connections.');
 
     //If the specific connection stops remove connection from connections array
     socket.on('disconnect',function(){
-      console.log('\t:: Socket :: has lost a connection');
+      console.log("------------",'\t:: Socket :: has lost a connection');
       // NEW CODE 
       hostIDs = hostIDs.filter(item => {
         return item[0] != socket.id
       });
-      console.log('this should only have no elements! : ' + hostIDs.length);
+      console.log("------------",'this should only have no elements! : ' + hostIDs.length);
       Connections.splice(Connections.indexOf(socket),1);
-      console.log('\t:: Socket :: has ' + Connections.length + ' connections.');  
+      console.log("------------",'\t:: Socket :: has ' + Connections.length + ' connections.');  
     });
 
     socket.on('room',function(roomID){
       socket.join(roomID);
-      console.log('joined a room || ' + roomID);
+      console.log("------------",'joined a room || ' + roomID);
       socket.emit('host-check');
     })
 
     socket.on('host-answer',function(data){
+      console.log("------------","socket.on('host-answer',function(data->)", data);
+
+      console.log("------------","host-answer -> data.isHost: ", data.isHost);
+
       if(data.isHost === 1){
         var hostInfo = [ socket.id , data.uuid ];
+        console.log("------------","host-answer -> push hostInfo: ", hostInfo);
         hostIDs.push(hostInfo);
       }
+      console.log("------------","host-answer -> hostInfo: ", hostInfo);
+      console.log("------------","host-answer -> hostIDs: ",  hostIDs);
+      console.log("------------","host-answer -> socket.broadcast.emit('video-answer',data->);", data);
       socket.emit('signal-ready',data);
     })
 
     //Server is listening for a video-offer msg from client-side
     socket.on('video-offer',function(data){
       if(data.isHost === 1){
+        console.log("------------","video-offer -> socket.to(data.uuid).emit('video-offer',data);", data);
         socket.to(data.uuid).emit('video-offer',data);
+
       }else{
         for(var i = 0; i < hostIDs.length; i++ ){
           if(data.uuid === hostIDs[i][1]){
+            console.log("------------","socket.on(video-offer -> socket.to(data.uuid).emit('video-offer',data);", data);
+            
             socket.to(hostIDs[i][0]).emit('video-offer',data);
           }
         }
+        console.log("------------","socket.on(video-offer) -> socket.emit(no-host)" );
         socket.emit('no-host');
       }
         
@@ -101,11 +115,14 @@ db.sequelize.sync({force: false}).then(function() {
     //Server is listening for a video-answer msg from client-side
     socket.on('video-answer',function(data){
       //if server receives video-answer msg broadcast the video-answer msg to all clients except original sender
+      console.log("------------","socket.on(video-answer -> socket.broadcast.emit('video-answer',data->);", data);
       socket.broadcast.emit('video-answer',data);
     });
+
     //Server is listening for a video-answer msg from client-side
     socket.on('new-ice-canidate',function(data){
       //if server receives video-answer msg broadcast the video-answer msg to all clients except original sender
+      console.log("------------","socket.on new-ice-canidate -> socket.broadcast.emit('new-ice-canidate',data->);", data);
       socket.broadcast.emit('new-ice-canidate',data);
     });
   });

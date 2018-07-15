@@ -2,25 +2,26 @@ import React, { Component } from 'react'
 import { Button, Modal, Label } from 'semantic-ui-react'
 //import { Input } from 'semantic-ui-react'
 //import { Form } from 'semantic-ui-react'
+
 import  LoginForm  from './LoginForm'
 import  SignUpForm  from './SignUpForm'
 import  API  from '../utilities/API'
-import { Route, Redirect,  withRouter } from 'react-router'
+// import { Route, Redirect,  withRouter } from 'react-router'
 
 class ModalLogin extends Component {
   constructor(props, context) {
     super(props, context); 
-    this.state = { open: false,
+    this.state = { open: true,
       username: "",
       password: "", 
       signUpFname: "",
       signUpLname: "",
       signUpEmail: "",
       signUpCell: "",
-      SignupPW: "",
-      SignupRole: "",
+      signUpPW: "",
+      signUpRole: "",
       signUpfile: "",
-      showLogin: "" // show=true show login form else show signup
+      showLogin: this.props.useLogin // showLogin=true show login form else show signup
     };
 
     this.handleOninputChange = this.handleOninputChange.bind(this);
@@ -55,7 +56,7 @@ class ModalLogin extends Component {
   }
 
   closeConfigShow = (closeOnEscape, closeOnRootNodeClick, showLogin) => () => {
-    if (!this.props.passHandler.loginState.role){
+    if (!this.props.LoginProp.loginState.role){
       this.setState({ closeOnEscape, closeOnRootNodeClick, showLogin: showLogin, open: true });
   } else {
       this.setState({ closeOnEscape, closeOnRootNodeClick, showLogin: showLogin,  open: false });
@@ -63,16 +64,20 @@ class ModalLogin extends Component {
     }
   }
 
-  close = () => this.setState({ open: false })
+  close = () => { 
+                  this.setState({ open: false });  // close modal
+                  this.props.history.push('/'); 
+                }
 
   createClose = () => {
-      this.setState({ open: false });
-      //console.log("createClose showLogin", this.state.showLogin);
+      this.setState({ open: false });  // close modal
+      //console.log("<ModalLogin> createClose() showLogin=", this.state.showLogin);
       if (this.state.showLogin) {
         this.login(this.state.username, this.state.password );
       } else {
         this.signup(this.state);
       }
+      //this.props.history.push('/');
   };
 
   login = (username, password ) => {
@@ -83,58 +88,64 @@ class ModalLogin extends Component {
       API.userLogin(params)
         .then((result) => {
          // console.log("login API results:", result.data);
-          this.props.passHandler.modalSubmit(result.data)})
+         console.log("<ModalLogin> login() API.userLogin=>result=", result , " state=>", this.state," props=>", this.props, " context=>", this.context);
+
+          this.props.LoginProp.modalSubmit(result.data);
+          if (result.data.role==="host") {
+            this.props.history.push('/my-sessions');
+          } else if (result.data.role==="client"){
+            this.props.history.push('/sessions');
+          } else {
+            this.props.history.push('/sessions');
+          }
+        })
         .catch(err => console.log(err))
     };
 
     logout = ( ) => {
       
       console.log("<ModalLogin> logout() 'redirect' state=>", this.state," props=>", this.props, " context=>", this.context);
-          < Redirect push to="/"  />
+          // < Redirect push to="/"  />
+          this.props.history.push('/');
           // this.props.history.push("/");
-          // props.history.push("/");
           
           API.userLogout()
           .then((result) => {
             console.log("logout API results:", result.data);
-            this.props.passHandler.modalSubmit(result.data)})
+            this.props.LoginProp.modalSubmit(result.data);
+            this.props.history.push('/');
+          })
           .catch(err => console.log(err))
       };
 
-    signup = (state) => {
-      console.log("signup state:", state);
-      const username = state.username, 
-      password = state.password,
-      signUpCell = state.signUpCell, 
-      SignupRole = state.SignupRole,
-       signUpFname = state.signUpFname,
-       signUpLname = state.signUpLname,
-       email = state.signUpEmail,
-       signUpfile = state.signUpfile;
+    signup = (param) => {
+      console.log("signup() param:", param);
 
       const formData = new FormData();
-       formData.append('logonId', username.trim());
-       formData.append('password', password.trim());
-       formData.append('role', SignupRole.trim());
-       formData.append('fstNam', signUpFname.trim());
-       formData.append('lstNam', signUpLname.trim());
-       formData.append('email', email.trim());
-       formData.append('cell', signUpCell.trim());
-       formData.append('createdBy', username.trim());
-       if (signUpfile)
+       formData.append('logonId', param.username.trim());
+       formData.append('password', param.password.trim());
+       formData.append('role', param.signUpRole.trim());
+       formData.append('fstNam', param.signUpFname.trim());
+       formData.append('lstNam', param.signUpLname.trim());
+       formData.append('email', param.signUpEmail.trim());
+       formData.append('cell', param.signUpCell.trim());
+       formData.append('createdBy', param.username.trim());
+       if (param.signUpfile)
        {
         console.log("signup formData added <photo>");
-        formData.append("photo", signUpfile, signUpfile.name);
+        formData.append("photo", param.signUpfile, param.signUpfile.name);
        }
-        //console.log("signup formData:", formData);
-        // Display the key/value pairs
-        // for(var pair of formData.entries()) {
-        //   console.log(pair[0] + ', '+  pair[1]          ); 
-        // }
+        console.log("signup formData:", formData);
+        //Display the key/value pairs
+        for(var pair of formData.entries()) {
+          console.log(pair[0] + ', '+  pair[1]          ); 
+        }
         API.userSignup(formData)
         .then((result) => {
           console.log("signup results:", result.data);
-          this.props.passHandler.modalSubmit(result.data)})
+          this.props.LoginProp.modalSubmit(result.data);
+          this.props.history.push('/sessions');
+        })
         .catch(err => console.log(err))
     };
 
@@ -157,28 +168,42 @@ class ModalLogin extends Component {
       signUpLname: "",
       signUpEmail: "",
       signUpCell: "",
-      SignupPW: "",
-      SignupRole: "",
+      signUpPW: "",
+      signUpRole: "",
       signUpfile: "",
     })
   };
 
+  
+  // componentDidUpdate(prevProps) {
+  //   // Typical usage (don't forget to compare props):
+  //   // if (this.props.userID !== prevProps.userID) {
+  //   //   this.fetchData(this.props.userID);
+  //   // }
+  //   this.setState({
+  //     showLogin: true})
+  // }
+
   render(props) {
     const { open, closeOnEscape, closeOnRootNodeClick } = this.state
-    const loginState = this.props.passHandler.loginState;
+    // const loginState = this.props.LoginProp.loginInfo.role;
+    const loginState = this.props.LoginProp.loginState.role;
+    // const loginState = false;
+
     console.log("<Modal> render() state=>", this.state," props=>", this.props, " context=>", this.context);
 
 
     return (
       <div>
         {/* <Button onClick={this.closeConfigShow(false, true)}>No Close on Escape</Button> */}
-        <Label pointing='right' style={loginState.role ?{ marginRight: '0.5em' }:{display:'none'}}>{loginState.role?loginState.firstName + " " + loginState.lastName : ""}</Label>
+        <Label pointing='down' style={loginState.role ?{ marginRight: '0.5em' }:{display:'none'}}>{loginState.role?loginState.firstName + " " + loginState.lastName : ""}</Label>
         <Button inverted onClick={this.closeConfigShow(true, false, true)}>{loginState.role?"Log Out": "Log In"}</Button>
         <Button inverted style={loginState.role ?{display:'none'}:{ marginLeft: '0.5em' }} onClick={this.closeConfigShow(true, false, false)}>Sign Up</Button>
         {/* <Button as='a' inverted={!fixed} primary={fixed} style={this.state.in ?{display:'none'}:{ marginLeft: '0.5em' }}> */}
 
         <Modal
           open={open}
+          
           closeOnEscape={closeOnEscape}
           closeOnRootNodeClick={closeOnRootNodeClick}
         >

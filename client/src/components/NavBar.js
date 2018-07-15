@@ -35,11 +35,13 @@ const NavBarMobile = ({
     <Sidebar
       as={Menu}
       animation="overlay"
+      //overlay - push - scale down  -   uncover -  slide out -  slide along
       icon="labeled"
       inverted
       items={leftItems}
       vertical
       visible={visible}
+      width="thin"
     />
     <Sidebar.Pusher
       dimmed={visible}
@@ -58,7 +60,7 @@ const NavBarMobile = ({
         <Menu.Menu position="right">
           {/* {_.map(rightItems, item => <Menu.Item {...item} />)} */}
           {_.map(rightItems, item => <Menu.Item {...item} />)}
-          <LoginModal passHandler={modalSubmit} />
+          {/* <LoginModal passHandler={modalSubmit} /> */}
         </Menu.Menu>
       </Menu>
       {/* {children} */}
@@ -78,7 +80,7 @@ const NavBarDesktop = ({ leftItems, rightItems, modalSubmit }) => (
       {_.map(leftItems, item => <Menu.Item {...item} />)}
     <Menu.Menu position="right">
       {_.map(rightItems, item => <Menu.Item {...item} />)}
-      <LoginModal passHandler={modalSubmit} />
+      {/* <LoginModal passHandler={modalSubmit} /> */}
     </Menu.Menu>
   </Menu>
 

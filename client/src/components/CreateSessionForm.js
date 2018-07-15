@@ -13,6 +13,7 @@ class CreateSessionForm extends Component {
   render(props) {
     // console.log("CreateSessionForm state", this.state);
     // console.log("CreateSessionForm props", this.props);
+    console.log("<CreateSessionForm> render() state=>", this.state," props=>", this.props, " context=>", this.context);
 
   
     return (

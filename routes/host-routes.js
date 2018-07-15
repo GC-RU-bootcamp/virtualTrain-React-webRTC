@@ -59,18 +59,37 @@ module.exports = function (app) {
         }
         // console.log(row.attendeeCnt);
       }
-      var data = {
-        title: "Trainer Sessions",
-        role: req.user.role,
-        username: req.user.fst_nam + " " + req.user.lst_nam,
-        logon_id2: String(req.user.logon_id),
-        user_id: req.user.id,
+      // var data = {
+      //   title: "Trainer Sessions",
+      //   role: req.user.role,
+      //   username: req.user.fst_nam + " " + req.user.lst_nam,
+      //   logon_id2: String(req.user.logon_id),
+      //   user_id: req.user.id,
+      //   isHost: req.user.role === 'host' ? true : false,
+      //   sessions: sessions
+      // }
+      var sessions = {
+        title: "my-sessions",
+        fullname: req.user.fst_nam + " " + req.user.lst_nam,
         isHost: req.user.role === 'host' ? true : false,
-        sessions: sessions
-      }
-      res.render("hostSession", data);
+        loginInfo: {
+          id: req.user.id,
+          logon_id: req.user.logon_id,
+          firstName: req.user.fst_nam,
+          lastName: req.user.lst_nam,
+          role: req.user.role,
+          photo: req.user.photo,
+          user_id: req.user.id,
+          email_adr: req.user.email_adr,
+          cell_phone: req.user.cell_phone,
+        },
+        sessions: sessions,
+      };
+      // res.render("hostSession", data);  // project 2
+      res.json(sessions);  
     }).catch(function () {
       res.status(500).end();
     });
   });
 };
+

@@ -41,8 +41,8 @@ class SignUpForm extends Component {
               <Form.Field  label='Username' placeholder='Logon ID' control={Input}name="username" onChange={this.props.textHandler} />
               <Form.Field  label='Email address' placeholder='Email' control={Input} name="signUpEmail" onChange={this.props.textHandler} />
               <Form.Field  label='Password' placeholder='Password' control={Input} type="password" name="password" onChange={this.props.textHandler} />
-              <Form.Field  label='Confirm Password' placeholder='Password' control={Input} type="password" name="SignupPW" onChange={this.props.textHandler} />
-              <Form.Field label='Role?' placeholder='Role?' control={Select} options={options}  name="SignupRole" onChange={this.props.textHandler} />
+              <Form.Field  label='Confirm Password' placeholder='Password' control={Input} type="password" name="signUpPW" onChange={this.props.textHandler} />
+              <Form.Field label='Role?' placeholder='Role?' control={Select} options={options}  name="signUpRole" onChange={this.props.textHandler} />
               <Form.Field  label='Cell Phone' placeholder='xxx-xxx-xxxx' control={Input} name="signUpCell" onChange={this.props.textHandler} />
               {/* <Form.Field label="Profile picture" placeholder='myPhoto.png' type="file" control={File} name="signUpFile" onChange={this.props.fileHandler} /> */}
               <Form.Field>
