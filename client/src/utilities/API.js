@@ -59,4 +59,8 @@ export default {
     return axios.get('/all-sessions')
   },
  
+  getMySessons: function() {
+    return axios.get('//api/client/my-sessions')
+  },
+ 
 }

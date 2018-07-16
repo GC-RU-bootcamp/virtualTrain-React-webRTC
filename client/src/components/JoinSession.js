@@ -95,22 +95,34 @@ class JoinSession extends Component {
         <div className = "col-6" > 
             {/* <h1 className = "mt-3"  id = "session-name" > </h1>  */}
             {/* <video key = {  videoViews[localVideo].key } controls muted id = "local-video" > </video>  */}
+            <p> {"Role: "+loginInfo.role }</p>
             <video  controls muted id = "local-video" width="350" height="350"> </video> 
             {/* {videoViews[localVideo].videoElement = document.getElementById('local-video')}  */}
          </div>
-         
+             {console.log("remoteViews=", remoteViews)}
                 {this
                   .state
                   .remoteViews
                   .map((view) => (
                     <div>
-                      <video controls key={view.videoId} id={view.videoId}  autoplay={view.attributes.autoplay} width={view.attributes.width} height={view.attributes.height} > 
-                          <source src={view.stream}/>
+                      <video controls 
+                      className={view.videoId}
+                      key={view.videoId} id={view.videoId}  
+                      autoplay={view.attributes.autoplay} 
+                      width={view.attributes.width} 
+                      height={view.attributes.height} 
+                      // srcObject={view.stream}
+                      href = {video => { document.getElementById(view.videoId).srcObject = view.stream }}> 
+                          {/* <source src={view.stream}/> */}
                       </video>
-                      {/* {document.getElementById(view.videoId).srcObject = view.stream} */}
-                      <audio controls key={view.audioId} id={view.audioId} src={view.stream} autoplay={view.attributes.autoplay} width={view.attributes.width} height={view.attributes.height} > 
-                          <source src={view.stream}/>
-                      </audio>
+                      {console.log("view.videoId", view.videoId)}
+                      {console.log("view.stream ", view.stream)}
+                      {console.log("video handle ", document.getElementById(view.videoId))}
+                      {console.log("video handle2 ", document.querySelector('video.'+view.videoId))}
+                      {/* {document.getElementById(view.videoId)?document.getElementById(view.videoId).srcObject=view.stream:view.stream=view.stream } */}
+                      {/* <audio controls key={view.audioId} id={view.audioId} src={view.stream} autoplay={view.attributes.autoplay} width={view.attributes.width} height={view.attributes.height} srcObject={view.stream}>  */}
+                          {/* <source src={view.stream}/> */}
+                      {/* </audio> */}
                       {/* {document.getElementById(view.audioId).srcObject = view.stream} */}
                     </div>
                     
@@ -192,8 +204,38 @@ class JoinSession extends Component {
 
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot){
+    console.log("<JoinSession> componentDidUpdate() state=>", this.state, " props=>", this.props, " context=>", this.context);
+
+    const remoteViews = [...this.state.remoteViews];
+    console.log("<JoinSession> componentDidUpdate() remoteViews=>",remoteViews);
+    for (let i = 0; i < remoteViews.length; i++) {
+      const view = remoteViews[i];
+      let element =  document.getElementById(view.videoId);
+      console.log("<JoinSession> componentDidUpdate() document.getElementById(view.videoId)=>",document.getElementById(view.videoId));
+
+      if (element){
+        document.getElementById(view.videoId).srcObject = view.stream;
+       }
+    }
+  }
+
   componentDidMount = () => {
     let that = this;
+
+    console.log("<JoinSession> componentDidMount() state=>", this.state, " props=>", this.props, " context=>", this.context);
+
+    const remoteViews = [...this.state.remoteViews];
+    console.log("<JoinSession> componentDidMount() remoteViews=>",remoteViews);
+    for (let i = 0; i < remoteViews.length; i++) {
+      const view = remoteViews[i];
+      let element =  document.getElementById(view.videoId);
+      console.log("<JoinSession> componentDidMount() document.getElementById(view.videoId)=>",document.getElementById(view.videoId));
+
+      if (element){
+        document.getElementById(view.videoId).srcObject = view.stream;
+       }
+    }
 
     var socket = io();
 
@@ -389,6 +431,9 @@ class JoinSession extends Component {
           console.error('mediaStream error : ', err);
         });
     });
+
+    
+    
 
   } //end componetDidMount()
 

@@ -123,7 +123,10 @@ class SessionsForm extends Component {
     // };
     console.log("join click() uuid=",uuid, " event=", event, );
     // window.location = "/join-session/"+id;
-    this.props.LoginProp.startSession(uuid);
+    this.props.history.push("/join-session/"+uuid);
+
+    //this.props.LoginProp.startSession(uuid);
+    
     // API.join(data)
     //   .then((result) => {
     //     console.log("<SessionsForm> API.userRegister result.data", result.data);
