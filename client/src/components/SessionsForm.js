@@ -9,6 +9,10 @@ import Moment from 'react-moment';
 
 import API from "../utilities/API"
 
+import {BrowserRouter as Router, Route, Switch,  Redirect,
+  //  NavLink, 
+    Link} from "react-router-dom";
+
 class SessionsForm extends Component {
   constructor(props, context) {
     super(props, context); 
@@ -126,7 +130,7 @@ class SessionsForm extends Component {
     this.props.history.push("/join-session/"+uuid);
 
     //this.props.LoginProp.startSession(uuid);
-    
+
     // API.join(data)
     //   .then((result) => {
     //     console.log("<SessionsForm> API.userRegister result.data", result.data);
