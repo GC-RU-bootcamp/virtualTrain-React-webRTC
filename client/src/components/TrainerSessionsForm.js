@@ -21,7 +21,7 @@ class TrainerSessionsForm extends Component {
   };
 
     console.log("<TrainerSessionsForm> constructor() state:", this.state," props:", this.props, "context:", this.context);
-    this.getSessions = this.getSessions.bind(this);
+    this.trainerSessions = this.trainerSessions.bind(this);
 
   }
 
@@ -51,15 +51,15 @@ class TrainerSessionsForm extends Component {
   }
   
   componentDidMount() {
-    console.log("<TrainerSessionsForm> componentDidMount() before getSessions() state:", this.state," props:", this.props, "context:", this.context);
+    console.log("<TrainerSessionsForm> componentDidMount() before trainerSessions() state:", this.state," props:", this.props, "context:", this.context);
 
-    this.getSessions();
-    console.log("<TrainerSessionsForm> componentDidMount() after getSessions() state:", this.state," props:", this.props, "context:", this.context);
+    this.trainerSessions();
+    console.log("<TrainerSessionsForm> componentDidMount() after trainerSessions() state:", this.state," props:", this.props, "context:", this.context);
 
   }
 
-  getSessions = () => {
-    API.getSessons()
+  trainerSessions = () => {
+    API.trainerSessions()
       .then((result) => {
         console.log("<TrainerSessionsForm> API.getSessons() results:", result.data);
         //this.props.passHandler.modalSubmit(result.data)
@@ -110,41 +110,44 @@ class TrainerSessionsForm extends Component {
               {/* <p>{loginInfo.first}</p> */}
               <h5>My up coming training Sessions</h5>
              
-  <Table inverted>
-    <Table.Header>
-    <Table.Row>
-        {/* <Table.HeaderCell>id</Table.HeaderCell>
-        <Table.HeaderCell>Host id</Table.HeaderCell> */}
-        <Table.HeaderCell>Name</Table.HeaderCell>
-        {/* <Table.HeaderCell>item_sesn_type</Table.HeaderCell> */}
-        <Table.HeaderCell>Description</Table.HeaderCell>
-        <Table.HeaderCell>item_date</Table.HeaderCell>
-        {/* <Table.HeaderCell>cost</Table.HeaderCell>
-        <Table.HeaderCell>conn_info</Table.HeaderCell> */}
-        <Table.HeaderCell>Action</Table.HeaderCell> 
-      </Table.Row>
-    </Table.Header>
+              <Table inverted>
+                <Table.Header>
+                <Table.Row>
+                    {/* <Table.HeaderCell>id</Table.HeaderCell>
+                    <Table.HeaderCell>Host id</Table.HeaderCell> */}
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    {/* <Table.HeaderCell>item_sesn_type</Table.HeaderCell> */}
+                    <Table.HeaderCell>Description</Table.HeaderCell>
+                    <Table.HeaderCell>item_date</Table.HeaderCell>
+                    <Table.HeaderCell>Register Cnt</Table.HeaderCell>
+                    {/* <Table.HeaderCell>cost</Table.HeaderCell>
+                    <Table.HeaderCell>conn_info</Table.HeaderCell> */}
+                    <Table.HeaderCell>Action</Table.HeaderCell> 
+                  </Table.Row>
+                </Table.Header>
 
-        <Table.Body>
-            {sessions
-              .map(session => (
-                <Table.Row key={session.id} id = {session.id} >
-                  {/* <Table.Cell>{session.id}</Table.Cell>   
-                  <Table.Cell>{session.people_id}</Table.Cell>    */}
-                  <Table.Cell>{session.name}</Table.Cell>   
-                  {/* <Table.Cell>{session.item_sesn_type}</Table.Cell>    */}
-                  <Table.Cell>{session.description}</Table.Cell>   
-                  <Table.Cell><Moment format="MM/DD/YYYY HH:mm">
-                    {session.item_date}
-                </Moment></Table.Cell>   
-                  {/* <Table.Cell>{"$" + session.cost}</Table.Cell>   
-                  <Table.Cell>{session.conn_info}</Table.Cell>    */}
-                <Table.Cell><Button  basic color='blue' id={"join="+session.id}      session_conn_info={session.conn_info} onClick={(e) => this.join(session.conn_info, e)}>Join</Button></Table.Cell>   
+                    <Table.Body>
+                        {sessions
+                          .map(session => (
+                            <Table.Row key={session.id} id = {session.id} >
+                              {/* <Table.Cell>{session.id}</Table.Cell>   
+                              <Table.Cell>{session.people_id}</Table.Cell>    */}
+                              <Table.Cell>{session.name}</Table.Cell>   
+                              {/* <Table.Cell>{session.item_sesn_type}</Table.Cell>    */}
+                              <Table.Cell>{session.description}</Table.Cell>   
+                              <Table.Cell><Moment format="MM/DD/YYYY HH:mm">
+                                {session.item_date}
+                            </Moment></Table.Cell>   
+                              <Table.Cell>{session.people_sessions.length}</Table.Cell>   
+                              {/* <Table.Cell>{"$" + session.cost}</Table.Cell>   
+                              <Table.Cell>{session.conn_info}</Table.Cell>    */}
+                            <Table.Cell><Button  basic color='blue' id={"join="+session.id}      session_conn_info={session.conn_info} onClick={(e) => this.join(session.conn_info, e)}>Join</Button></Table.Cell>   
+                            {/* <Table.Cell><Button  basic color='red' id={"cancel="+session.id}      session_conn_info={session.conn_info} onClick={(e) => this.join(session.conn_info, e)}>Cancel</Button></Table.Cell>    */}
 
-                </Table.Row>
-              ))}
-        </Table.Body>
-      </Table>
+                            </Table.Row>
+                          ))}
+                    </Table.Body>
+                  </Table>
 
       </div>
     )

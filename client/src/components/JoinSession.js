@@ -113,6 +113,9 @@ class JoinSession extends Component {
                       height={view.attributes.height} 
                       // srcObject={view.stream}
                       href = {video => { document.getElementById(view.videoId).srcObject = view.stream }}> 
+                      {/* ref = {audio => { audio.srcObject = stream }} */}
+
+                      
                           {/* <source src={view.stream}/> */}
                       </video>
                       {console.log("view.videoId", view.videoId)}

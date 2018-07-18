@@ -28,6 +28,10 @@ export default {
     return axios.get('/api/client/my-sessions')
   },
 
+  trainerSessions: function() {
+    return axios.get('/my-sessions')
+  },
+
   session: function( uuid) {
     return axios.get("/api/session/" + uuid)
   },
@@ -59,8 +63,8 @@ export default {
     return axios.get('/all-sessions')
   },
  
-  getMySessons: function() {
-    return axios.get('//api/client/my-sessions')
+  getRegisteredSessons: function() {
+    return axios.get('/api/client/my-sessions')
   },
  
 }

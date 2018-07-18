@@ -57,18 +57,23 @@ db.sequelize.sync({force: false}).then(function() {
   io.on('connection',function(socket){
     console.log("------------",'\t:: Socket :: has made a connection.');
     Connections.push(socket.id);
+    console.log("------------","connection -> Connections.push(socket.id) socket.id=", socket.id);
     console.log("------------",'\t:: Socket :: has ' + Connections.length + ' connections.');
+
 
     //If the specific connection stops remove connection from connections array
     socket.on('disconnect',function(){
       console.log("------------",'\t:: Socket :: has lost a connection');
+      console.log("------------",'\t:: Socket :: has ' + Connections.length + ' connections.');
+
       // NEW CODE 
       hostIDs = hostIDs.filter(item => {
         return item[0] != socket.id
       });
-      console.log("------------",'this should only have no elements! : ' + hostIDs.length);
+      console.log("------------",'this should only have no elements! : ???' + hostIDs.length);
+      console.log("------------",'\t:: Socket :: has (before splce)' + Connections.length + ' connections.');  
       Connections.splice(Connections.indexOf(socket),1);
-      console.log("------------",'\t:: Socket :: has ' + Connections.length + ' connections.');  
+      console.log("------------",'\t:: Socket :: has (before splce)' + Connections.length + ' connections.');  
     });
 
     socket.on('room',function(roomID){
@@ -84,25 +89,26 @@ db.sequelize.sync({force: false}).then(function() {
 
       if(data.isHost === 1){
         var hostInfo = [ socket.id , data.uuid ];
-        console.log("------------","host-answer -> push hostInfo: ", hostInfo);
+        console.log("------------","host-answer if(data.isHost === 1)-> hostIDs.push(hostInfo) hostInfo=", hostInfo);
         hostIDs.push(hostInfo);
       }
       console.log("------------","host-answer -> hostInfo: ", hostInfo);
       console.log("------------","host-answer -> hostIDs: ",  hostIDs);
-      console.log("------------","host-answer -> socket.broadcast.emit('video-answer',data->);", data);
+      console.log("------------","host-answer if(data.isHost === 1)-> socket.broadcast.emit('signal-ready,data->);", data);
       socket.emit('signal-ready',data);
     })
 
     //Server is listening for a video-offer msg from client-side
     socket.on('video-offer',function(data){
       if(data.isHost === 1){
-        console.log("------------","video-offer -> socket.to(data.uuid).emit('video-offer',data);", data);
+        console.log("------------","video-offer if(data.isHost === 1) -> socket.to(data.uuid).emit('video-offer',data);", data);
         socket.to(data.uuid).emit('video-offer',data);
 
       }else{
+        console.log("------------","video-offer -> hostIDs: ",  hostIDs);
         for(var i = 0; i < hostIDs.length; i++ ){
           if(data.uuid === hostIDs[i][1]){
-            console.log("------------","socket.on(video-offer -> socket.to(data.uuid).emit('video-offer',data);", data);
+            console.log("------------","socket.on(video-offer -> socket.to(hostIDs[i][0]).emit('video-offer',data) data=" , data, " i=", i);
             
             socket.to(hostIDs[i][0]).emit('video-offer',data);
           }

@@ -16,7 +16,9 @@ import {BrowserRouter as Router, Route, Switch,  Redirect,
 class SessionsForm extends Component {
   constructor(props, context) {
     super(props, context); 
-    this.state = { response:{}
+    this.state = { allSessions:{},
+         myRegisteredSessions:{},
+
   };
 
     console.log("<SessionForm> constructor() state:", this.state," props:", this.props, "context:", this.context);
@@ -35,51 +37,53 @@ class SessionsForm extends Component {
 
   }
 
+  isRegistered = (thisSessionId) => {
+      let retval = false;
+      for (let i = 0; i < this.state.myRegisteredSessions.length; i++) {
+        if(thisSessionId === this.state.myRegisteredSessions[i].session_id )
+        retval = true;
+      }
+      return retval;
+  }
+
+  getRegistered = () => {
+    API.getRegisteredSessons()
+      .then((result) => {
+        console.log("result.data.length", result.data.length);
+ 
+        console.log("<SessionsForm> API.getRegisteredSessons() results:", result.data);
+        //this.props.passHandler.modalSubmit(result.data)
+        this.setState({
+          myRegisteredSessions: result.data,
+        })
+
+      })
+      .catch(err => console.log("getRegisteredSessons",err))
+  };
+
   getSessions = () => {
     API.getSessons()
       .then((result) => {
         console.log("result.data.sessions.length", result.data.sessions.length);
-        if (result.data.sessions){
-          for (let i = 0; i < result.data.sessions.length; i++) {
-            //const element = result.data[i];
-            result.data.sessions[i].registered = false;
-            //console.log("result.data.sessions", result.data.sessions[i])
-          }
-        }
-        // API.mySessons()
-        //   .then((result) => {
-        //   console.log("result.data.sessions.length", result.data.sessions.length);
-        //   if (result.data.sessions){
-        //     for (let i = 0; i < result.data.sessions.length; i++) {
-        //       //const element = result.data[i];
-        //       result.data.sessions[i].registered = false;
-        //       //console.log("result.data.sessions", result.data.sessions[i])
-        //     }
-        //   }
-        //   console.log("<SessionsForm> API.mySessons() results:", result.data);
-        //   //this.props.passHandler.modalSubmit(result.data)
-        //   this.setState({
-        //     response: result.data,
-        //   })
-  
-        // })
-        // .catch(err => console.log(err))
+
+        this.getRegistered();
+
         console.log("<SessionsForm> API.getSessons() results:", result.data);
         //this.props.passHandler.modalSubmit(result.data)
         this.setState({
-          response: result.data,
+          allSessions: result.data,
         })
 
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log("getSessons",err))
   };
 
   register = (id, event) => {
     //event.preventDefault();
     const data = {
       session_id: id,
-      logon_id: this.state.response.loginInfo.logon_id,
-      user_id: this.state.response.loginInfo.id,
+      logon_id: this.state.allSessions.loginInfo.logon_id,
+      user_id: this.state.allSessions.loginInfo.id,
     };
     console.log("register click() id=",id, " event=", event, " data=", data);
 
@@ -89,8 +93,9 @@ class SessionsForm extends Component {
         //console.log("<SessionsForm> API.getSessons() results:", result.data);
         //this.props.passHandler.modalSubmit(result.data)
         // this.setState({
-        //   response: result.data,
+        //   allSessions: result.data,
         // })
+        this.getRegistered();
 
       })
     //   .catch(err => console.log(err))
@@ -100,8 +105,8 @@ class SessionsForm extends Component {
     //event.preventDefault();
     const data = {
       session_id: id,
-      logon_id: this.state.response.loginInfo.logon_id,
-      user_id: this.state.response.loginInfo.id,
+      logon_id: this.state.allSessions.loginInfo.logon_id,
+      user_id: this.state.allSessions.loginInfo.id,
     };
     console.log("usercancel click() id=",id, " event=", event, " data=", data);
 
@@ -111,9 +116,9 @@ class SessionsForm extends Component {
         //console.log("<SessionsForm> API.getSessons() results:", result.data);
         //this.props.passHandler.modalSubmit(result.data)
         // this.setState({
-        //   response: result.data,
+        //   allSessions: result.data,
         // })
-
+        this.getRegistered();
       })
     //   .catch(err => console.log(err))
   }
@@ -122,8 +127,8 @@ class SessionsForm extends Component {
     //event.preventDefault();
     // const data = {
     //   session_id: id,
-    //   logon_id: this.state.response.loginInfo.logon_id,
-    //   user_id: this.state.response.loginInfo.id,
+    //   logon_id: this.state.allSessions.loginInfo.logon_id,
+    //   user_id: this.state.allSessions.loginInfo.id,
     // };
     console.log("join click() uuid=",uuid, " event=", event, );
     // window.location = "/join-session/"+id;
@@ -131,17 +136,6 @@ class SessionsForm extends Component {
 
     //this.props.LoginProp.startSession(uuid);
 
-    // API.join(data)
-    //   .then((result) => {
-    //     console.log("<SessionsForm> API.userRegister result.data", result.data);
-    //     //console.log("<SessionsForm> API.getSessons() results:", result.data);
-    //     //this.props.passHandler.modalSubmit(result.data)
-    //     // this.setState({
-    //     //   response: result.data,
-    //     // })
-
-    //   })
-    //   .catch(err => console.log(err))
   }
 
   render(props) {
@@ -149,8 +143,8 @@ class SessionsForm extends Component {
     // console.log("SessionsForm props", this.props);
 
     console.log("<SessionForm> render() state:", this.state," props:", this.props, "context:", this.context);
-    const loginInfo = this.state.response.loginInfo?
-          this.state.response.loginInfo:
+    const loginInfo = this.state.allSessions.loginInfo?
+          this.state.allSessions.loginInfo:
           {
               "logon_id": "",
               "firstName": "",
@@ -159,7 +153,7 @@ class SessionsForm extends Component {
               "photo": null,
               "user_id": ""
           };
-    const sessions = this.state.response.sessions?this.state.response.sessions:[];
+    const sessions = this.state.allSessions.sessions?this.state.allSessions.sessions:[];
   
     return (
 
@@ -167,12 +161,12 @@ class SessionsForm extends Component {
     
             {/* <Form> */}
               {/* <p>Sessions FORM</p> */}
-              <p>{ "Welcome "  + this.state.response.fullname}</p>
+              <p>{ "Welcome "  + this.state.allSessions.fullname}</p>
               {/* <p>{loginInfo.first}</p> */}
               <p>All Sessions</p>
 
               {/* {console.log("in render")}
-              {console.log("this.state.response", this.state.response)} */}
+              {console.log("this.state.allSessions", this.state.allSessions)} */}
               {/* <p>{ "logon_id = "  +  loginInfo.logon_id}</p>
               <p>{ "firstName = "  +  loginInfo.firstName}</p>
               <p>{ "lastName = "  +  loginInfo.lastName}</p>
@@ -215,10 +209,23 @@ class SessionsForm extends Component {
                   <Table.Cell>{ session.Person.fst_nam + " " + session.Person.lst_nam}</Table.Cell>   
                   <Table.Cell>{"$" + session.cost}</Table.Cell>   
                   {/* <Table.Cell>{session.conn_info}</Table.Cell>    */}
-                  <Table.Cell><Button basic color='green' id={"register-"+session.id}  session_conn_info={session.conn_info} onClick={(e) => this.register(session.id, e)}>Register</Button></Table.Cell>   
+                  <Table.Cell>
+                    <Button basic color='green' id={"register-"+session.id}  
+                    session_conn_info={session.conn_info} 
+                        style={this.isRegistered(session.id) ?{display:'none'}:{ marginRight: '0.5em' }}
+                        onClick={(e) => this.register(session.id, e)}>Register</Button>
+                    <Button  basic color='blue' id={"join="+session.id}      session_conn_info={session.conn_info} 
+                        style={this.isRegistered(session.id) ?{ marginRight: '0.5em' }:{display:'none'}}
+                        onClick={(e) => this.join(session.conn_info, e)}>Join</Button>
+                    <Button  basic color='red' id={"cancel-"+session.id}     session_conn_info={session.conn_info} 
+                       style={this.isRegistered(session.id) ?{ marginRight: '0.5em' }:{display:'none'}}
+                       onClick={(e) => this.cancel(session.id, e)}>Cancel</Button>
+                  </Table.Cell>   
                   {/* <Table.Cell><Button  basic color='blue' id={"join="+session.id}   href={"/join-session/"+session.conn_info} target="_blank"    session_conn_info={session.conn_info} >Join</Button></Table.Cell>    */}
-                  <Table.Cell><Button  basic color='blue' id={"join="+session.id}      session_conn_info={session.conn_info} onClick={(e) => this.join(session.conn_info, e)}>Join</Button></Table.Cell>   
-                  <Table.Cell><Button  basic color='red' id={"cancel-"+session.id}     session_conn_info={session.conn_info} onClick={(e) => this.cancel(session.conn_info, e)}>Cancel</Button></Table.Cell>   
+                   {/* <Table.Cell>
+                         </Table.Cell>   
+                   <Table.Cell>
+                   </Table.Cell>    */}
                 </Table.Row>
               ))}
         </Table.Body>
