@@ -92,19 +92,19 @@ class JoinSession extends Component {
           <p> {"Name: " + loginInfo.firstName + " " + loginInfo.lastName }</p>
         { /* <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.1.5/adapter.js"></script> */ } 
         { /* <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script> */ } 
-        <div className = "col-6" > 
+        {/* <div className = "col-6" >  */}
             {/* <h1 className = "mt-3"  id = "session-name" > </h1>  */}
             {/* <video key = {  videoViews[localVideo].key } controls muted id = "local-video" > </video>  */}
             <p> {"Role: "+loginInfo.role }</p>
             <video  controls muted id = "local-video" width="350" height="350"> </video> 
             {/* {videoViews[localVideo].videoElement = document.getElementById('local-video')}  */}
-         </div>
+         {/* </div> */}
              {console.log("remoteViews=", remoteViews)}
                 {this
                   .state
                   .remoteViews
                   .map((view) => (
-                    <div>
+                    <span>
                       <video controls muted
                       className={view.videoId}
                       key={view.videoId} id={view.videoId}  
@@ -127,11 +127,11 @@ class JoinSession extends Component {
                           {/* <source src={view.stream}/> */}
                       {/* </audio> */}
                       {/* {document.getElementById(view.audioId).srcObject = view.stream} */}
-                    </div>
+                    </span>
                     
                   ))}
           
-        <Button onClick = {this.clickHandler } > Logout </Button>
+        {/* <Button onClick = {this.clickHandler } > Logout </Button> */}
 
       </div>
     )
