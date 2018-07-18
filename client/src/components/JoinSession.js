@@ -105,7 +105,7 @@ class JoinSession extends Component {
                   .remoteViews
                   .map((view) => (
                     <div>
-                      <video controls 
+                      <video controls muted
                       className={view.videoId}
                       key={view.videoId} id={view.videoId}  
                       autoplay={view.attributes.autoplay} 
@@ -263,7 +263,7 @@ class JoinSession extends Component {
 
 
     var localVideo = document.getElementById('local-video');
-    var localAudio = document.getElementById('local-audio');
+    // var localAudio = document.getElementById('local-audio');
 
     var localStream;
 

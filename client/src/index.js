@@ -156,7 +156,7 @@ class App extends Component {
                 <Route exact path="/logout" render={(props) => <LogoutForm LoginProp={ modalSubmitPropVal } {...props} />} />
                 <Route exact path="/profile" render={(props) => <ProfileForm LoginProp={ modalSubmitPropVal } {...props} />} />
                 <Route exact path="/about" render={(props) => <AboutForm LoginProp={ modalSubmitPropVal } {...props }/>} />
-                <Route  path="/join-session/:id" render={(props) => <JoinSession LoginProp={ modalSubmitPropVal } {...props }/>} />
+                <Route  path="/join-session/:id" component={(props) => <JoinSession LoginProp={ modalSubmitPropVal } {...props }/>} />
                 <Route render={() => (<h1 className="text-center">Page Not Found!</h1>)}/>
               </Switch>
             </div>

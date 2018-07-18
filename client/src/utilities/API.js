@@ -7,6 +7,9 @@ export default {
     return axios.post('/api/login', loginParams)
   },
 
+  createSession: function(sessionParams) {
+    return axios.post('/api/host/create-session', sessionParams)
+  },
 
   userLogout: function() {
     return axios.get('/api/logout')
