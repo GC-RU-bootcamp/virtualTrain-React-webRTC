@@ -3,8 +3,12 @@ import React, {
 } from 'react'
 import {
   Button,
+  Label,
 //  Modal
 } from 'semantic-ui-react'
+
+import { Slider } from 'react-semantic-ui-range'
+import 'semantic-ui-css/semantic.min.css';
 
 import io from 'socket.io-client';
 
@@ -45,6 +49,8 @@ class JoinSession extends Component {
       remoteViews: [],
       session_name: "",
       socket:"",
+      value1: 4,
+      value: 0
 
     };
     console.log("<JoinSession> constructor() state=>", this.state, " props=>", this.props, " context=>", this.context);
@@ -81,22 +87,43 @@ class JoinSession extends Component {
 
 
     return ( 
+
+      
     
       <div>
+            <h3>Attending Session: {this.state.session_name}</h3>
+            <h4 id="session-name" >  </h4> 
+            <h3>Attended by: { loginInfo.firstName + " " + loginInfo.lastName }</h3>
+            <p> {"Your role is: "+loginInfo.role }</p>
 
+            <p> Sizer: <Label color="red">{this.state.value1}</Label>
+              <Slider color="red" inverted={false}
+                settings={{
+                start: this.state.value1,
+                min:1,
+                max:100,
+                step:1,
+                onChange: (value) => {
+                  this.setState({
+                    value1:value
+                  })
+                }
+              }}/>
+            </p>
+            
           { /* <Form> */ }
-          <h4> Attend Session FORM </h4> 
+          {/* <h4> Attend Session FORM </h4> 
           <h4 id="session-name" >  </h4> 
           <p> {"Role: "+loginInfo.role }</p>
           <p> {"User: " + loginInfo.username }</p>
-          <p> {"Name: " + loginInfo.firstName + " " + loginInfo.lastName }</p>
+          <p> {"Name: " + loginInfo.firstName + " " + loginInfo.lastName }</p> */}
         { /* <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.1.5/adapter.js"></script> */ } 
         { /* <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script> */ } 
         {/* <div className = "col-6" >  */}
             {/* <h1 className = "mt-3"  id = "session-name" > </h1>  */}
             {/* <video key = {  videoViews[localVideo].key } controls muted id = "local-video" > </video>  */}
-            <p> {"Role: "+loginInfo.role }</p>
-            <video  controls muted id = "local-video" width="350" height="350"> </video> 
+            <video  controls muted id = "local-video" width={this.state.value1*50} height={this.state.value1*50}> </video> 
+            {/* <video  controls muted id = "local-video" width="350" height="350"> </video>  */}
             {/* {videoViews[localVideo].videoElement = document.getElementById('local-video')}  */}
          {/* </div> */}
              {console.log("remoteViews=", remoteViews)}
@@ -109,8 +136,10 @@ class JoinSession extends Component {
                       className={view.videoId}
                       key={view.videoId} id={view.videoId}  
                       autoplay={view.attributes.autoplay} 
-                      width={view.attributes.width} 
-                      height={view.attributes.height} 
+                      // width={view.attributes.width} 
+                      // height={view.attributes.height} 
+                      width={this.state.value1*50} 
+                      height={this.state.value1*50} 
                       // srcObject={view.stream}
                       href = {video => { document.getElementById(view.videoId).srcObject = view.stream }}> 
                       {/* ref = {audio => { audio.srcObject = stream }} */}
